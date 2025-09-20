@@ -19,27 +19,14 @@
       font-size: 14px;
     }
     #hud b { font-size:16px; }
-    #instructions {
-      position: absolute;
-      left: 12px;
-      bottom: 12px;
-      z-index: 999;
-      background: rgba(0,0,0,0.45);
-      padding: 8px 12px;
-      border-radius: 8px;
-      font-size: 13px;
-    }
   </style>
 </head>
 <body>
   <div id="hud">
     <div><b>Αστέρια απομένουν:</b> <span id="remaining">15</span> / 15</div>
   </div>
-  <div id="instructions">
-    Κίνηση: W A S D · Συλλογή αστέρα: δεξί κλικ πάνω του
-  </div>
 
-  <a-scene background="color: #e6d9c9" embedded>
+  <a-scene background="color: #e6d9c9">
     <a-assets>
       <audio id="tickSound" src="assets/tick.mp3"></audio>
     </a-assets>
@@ -52,8 +39,6 @@
     <a-box position="4 1 0" depth="6" height="2.5" width="0.2" color="#d2c4b0"></a-box>
     <a-box position="0 1 -3" depth="0.2" height="2.5" width="8" color="#d2c4b0"></a-box>
     <a-box position="0 1 3" depth="0.2" height="2.5" width="8" color="#d2c4b0"></a-box>
-
-    <a-plane position="3.89 1 0.5" rotation="0 90 0" width="1.2" height="0.9" color="#9fcdf7" material="opacity:0.85"></a-plane>
 
     <a-box id="bed" class="obstacle" position="-3.1 0.35 -1" width="2.2" height="0.6" depth="1.8" color="#c0d7c7"></a-box>
 
@@ -69,10 +54,10 @@
 
     <a-entity id="cameraRig" position="0 1.6 2.5">
       <a-entity camera wasd-controls="acceleration: 30" look-controls>
-        <a-entity id="cursor" cursor="rayOrigin: mouse; fuse: false"
+        <a-entity id="cursor" cursor="rayOrigin: mouse"
                   raycaster="objects: .star"
                   geometry="primitive: ring; radiusInner: 0.007; radiusOuter: 0.012"
-                  material="shader: flat; color: #fff; opacity:0.9"
+                  material="shader: flat; color: #fff"
                   position="0 0 -0.5"></a-entity>
       </a-entity>
     </a-entity>
@@ -87,57 +72,20 @@
     const STAR_INTERVAL_MS = 300;
     const SPAWN_BOUNDS = {xMin: -2.5, xMax: 2.5, zMin: -2.6, zMax: 2.6, yMin: 0.5, yMax: 2.3};
 
-    const OBSTACLES = [
-      {id:'bed', cx:-3.1, cy:0.35, cz:-1, hx:1.1, hy:0.3, hz:0.9},
-      {id:'bin', cx:1.6, cy:0.2, cz:2.7, hx:0.2, hy:0.2, hz:0.2},
-      {id:'desk', cx:2.3, cy:0.6, cz:-1.9, hx:0.8, hy:0.4, hz:0.3},
-      {id:'chair', cx:2.3, cy:0.35, cz:-1.1, hx:0.25, hy:0.35, hz:0.25},
-      {id:'door', cx:0.0, cy:1.0, cz:-3.09, hx:0.6, hy:1.0, hz:0.05}
-    ];
-
-    function aabbIntersects(ax, ay, az, ar, box) {
-      return (Math.abs(ax - box.cx) <= (ar + box.hx)) &&
-             (Math.abs(ay - box.cy) <= (ar + box.hy)) &&
-             (Math.abs(az - box.cz) <= (ar + box.hz));
-    }
-
     document.addEventListener('DOMContentLoaded', () => {
-      const scene = document.querySelector('a-scene');
       const starsRoot = document.getElementById('starsRoot');
       const soundPlayer = document.getElementById('soundPlayer');
       const remainingEl = document.getElementById('remaining');
-      const cameraRig = document.getElementById('cameraRig');
       const door = document.getElementById('door');
       const voidBehind = document.getElementById('voidBehind');
+      const cursor = document.querySelector('#cursor');
 
       let remaining = TOTAL_STARS;
       remainingEl.textContent = remaining;
 
-      let prevPos = new THREE.Vector3();
-      cameraRig.object3D.getWorldPosition(prevPos);
-      const PLAYER_RADIUS = 0.25;
-
-      scene.addEventListener('loaded', () => {
-        scene.addEventListener('tick', () => {
-          const pos = cameraRig.object3D.position;
-          let collided = false;
-          for (let b of OBSTACLES) {
-            if (aabbIntersects(pos.x, pos.y - 1.0, pos.z, PLAYER_RADIUS, b)) {
-              collided = true;
-              break;
-            }
-          }
-          if (collided) {
-            cameraRig.object3D.position.set(prevPos.x, prevPos.y, prevPos.z);
-          } else {
-            prevPos.set(pos.x, pos.y, pos.z);
-          }
-        });
-      });
-
       function randomInRange(min, max) { return Math.random() * (max - min) + min; }
 
-      function spawnOneStar(index) {
+      function spawnOneStar() {
         const sp = document.createElement('a-sphere');
         sp.setAttribute('radius', 0.12);
         sp.setAttribute('class', 'star');
@@ -156,18 +104,13 @@
       function collectStar(el) {
         if (!el || el.dataset.collected) return;
         el.dataset.collected = '1';
-        try { soundPlayer.components.sound.playSound(); } catch(e){}
-        el.setAttribute('visible', 'false');
+        soundPlayer.components.sound.playSound();
+        el.parentNode.removeChild(el);
         remaining = Math.max(0, remaining - 1);
         remainingEl.textContent = remaining;
-        if (remaining === 0) onAllStarsCollected();
-      }
-
-      function onAllStarsCollected() {
-        door.setAttribute('animation__open', 'property: rotation; to: 0 -90 0; dur: 900; easing: easeInOutQuad');
-        voidBehind.setAttribute('visible', 'true');
-        for (let i=0;i<OBSTACLES.length;i++){
-          if (OBSTACLES[i].id === 'door') { OBSTACLES.splice(i,1); break; }
+        if (remaining === 0) {
+          door.setAttribute('animation__open', 'property: rotation; to: 0 -90 0; dur: 900; easing: easeInOutQuad');
+          voidBehind.setAttribute('visible', 'true');
         }
       }
 
@@ -175,23 +118,26 @@
         let spawned = 0;
         const interval = setInterval(()=> {
           if (spawned >= TOTAL_STARS) { clearInterval(interval); return; }
-          spawnOneStar(spawned);
+          spawnOneStar();
           spawned++;
         }, STAR_INTERVAL_MS);
       }, STAR_APPEAR_DELAY_MS);
 
       window.addEventListener('contextmenu', e => {
         e.preventDefault();
-        const cursor = document.querySelector('#cursor');
-        const intersection = cursor.components.raycaster.getIntersection(document.querySelector('.star'));
-        if (intersection && intersection.object.el) {
-          collectStar(intersection.object.el);
+        const intersections = cursor.components.raycaster.intersections;
+        if (intersections.length > 0) {
+          const hit = intersections[0].object.el;
+          if (hit && hit.classList.contains('star')) {
+            collectStar(hit);
+          }
         }
       });
     });
   </script>
 </body>
 </html>
+
 
 
          
