@@ -123,8 +123,8 @@
         }, STAR_INTERVAL_MS);
       }, STAR_APPEAR_DELAY_MS);
 
-      window.addEventListener('contextmenu', e => {
-        e.preventDefault();
+      // ΑΡΙΣΤΕΡΟ κλικ για συλλογή
+      window.addEventListener('click', e => {
         const intersections = cursor.components.raycaster.intersections;
         if (intersections.length > 0) {
           const hit = intersections[0].object.el;
@@ -137,6 +137,7 @@
   </script>
 </body>
 </html>
+
 
 
 
