@@ -26,39 +26,35 @@
     <div><b>Μπάλες απομένουν:</b> <span id="remaining">15</span> / 15</div>
   </div>
 
-  <a-scene background="color: #e6d9c9" shadow="type: pcfsoft">
+  <a-scene background="color: #e6d9c9">
     <a-assets>
       <audio id="tickSound" src="assets/tick.mp3"></audio>
-      <img id="woodTex" src="https://cdn.pixabay.com/photo/2017/02/07/20/40/wood-2045379_1280.jpg">
-      <img id="fabricLila" src="https://cdn.pixabay.com/photo/2017/02/20/19/20/fabric-2084829_1280.jpg">
-      <img id="fabricBeige" src="https://cdn.pixabay.com/photo/2016/11/29/06/15/fabric-1867076_1280.jpg">
-      <img id="rugGreen" src="https://cdn.pixabay.com/photo/2017/04/10/11/07/texture-2216925_1280.jpg">
-      <img id="metalTex" src="https://cdn.pixabay.com/photo/2012/02/29/12/17/metal-18830_1280.jpg">
     </a-assets>
 
-    <a-entity light="type: ambient; intensity: 1.0; color: #ffffff"></a-entity>
-    <a-entity light="type: directional; intensity: 1.5; castShadow: true; color: #ffffff" position="3 5 3" rotation="-45 -45 0"
-              shadow-camera-left="-10" shadow-camera-right="10"
-              shadow-camera-top="10" shadow-camera-bottom="-10"
-              shadow-camera-near="0.5" shadow-camera-far="20"
-              shadow-map-width="2048" shadow-map-height="2048"></a-entity>
+    <a-entity light="type: ambient; intensity: 0.7"></a-entity>
+    <a-entity light="type: directional; intensity: 0.8" position="-1 3 1"></a-entity>
 
-    <a-plane rotation="-90 0 0" width="8" height="6" color="#dfe7dd" shadow="receive: true"></a-plane>
-    <a-plane rotation="-90 0 0" width="4" height="3" material="src: #rugGreen; shader: standard; roughness:0.5; repeat: 2 2" position="0 0.01 0" shadow="receive: true"></a-plane>
+    <a-plane rotation="-90 0 0" width="8" height="6" color="#dfe7dd"></a-plane>
+    <a-plane rotation="-90 0 0" width="4" height="3" color="#013220" position="0 0.01 0"></a-plane>
 
-    <a-box position="-4 1 0" depth="6" height="2.5" width="0.2" material="color: #d2c4b0; shader: standard; roughness:0.4; metalness:0.2" shadow="cast: true; receive: true"></a-box>
-    <a-box position="4 1 0" depth="6" height="2.5" width="0.2" material="color: #d2c4b0; shader: standard; roughness:0.4; metalness:0.2" shadow="cast: true; receive: true"></a-box>
-    <a-box position="0 1 -3" depth="0.2" height="2.5" width="8" material="color: #d2c4b0; shader: standard; roughness:0.4; metalness:0.2" shadow="cast: true; receive: true"></a-box>
-    <a-box id="backWall" position="0 1 3" depth="0.2" height="2.5" width="8" material="color: #d2c4b0; shader: standard; roughness:0.4; metalness:0.2" shadow="cast: true; receive: true"></a-box>
+    <a-box position="-4 1 0" depth="6" height="2.5" width="0.2" color="#d2c4b0"></a-box>
+    <a-box position="4 1 0" depth="6" height="2.5" width="0.2" color="#d2c4b0"></a-box>
+    <a-box position="0 1 -3" depth="0.2" height="2.5" width="8" color="#d2c4b0"></a-box>
+    <a-box id="backWall" position="0 1 3" depth="0.2" height="2.5" width="8" color="#d2c4b0"></a-box>
+    <a-plane id="portalLight" position="0 1 3.01" width="8" height="2.5" color="#ffffff" visible="false"></a-plane>
 
-    <a-box id="bed" class="obstacle" position="-3.1 0.35 -1" width="2.2" height="0.6" depth="1.8" material="src: #fabricBeige; color: #fff; shader: standard; roughness:0.5; metalness:0.1" shadow="cast: true; receive: true"></a-box>
-    <a-cylinder id="bin" class="obstacle" position="1.6 0.2 2.7" radius="0.18" height="0.4" material="src: #metalTex; color: #ffffff; shader: standard; roughness:0.3; metalness:0.9" shadow="cast: true; receive: true"></a-cylinder>
-    <a-box id="desk" class="obstacle" position="2.3 0.6 -1.9" width="1.6" height="0.8" depth="0.6" material="src: #woodTex; color: #fff; shader: standard; roughness:0.4; metalness:0.2; repeat:2 2" shadow="cast: true; receive: true"></a-box>
-    <a-box id="chair" class="obstacle" position="2.3 0.35 -1.1" width="0.5" height="0.7" depth="0.5" material="src: #fabricLila; color: #b266b2; shader: standard; roughness:0.5; metalness:0" shadow="cast: true; receive: true"></a-box>
+    <a-box id="bed" class="obstacle" position="-3.1 0.35 -1" width="2.2" height="0.6" depth="1.8" color="#c0d7c7"></a-box>
+    <a-cylinder id="bin" class="obstacle" position="1.6 0.2 2.7" radius="0.18" height="0.4" color="#9e9e9e"></a-cylinder>
+    <a-box id="desk" class="obstacle" position="2.3 0.6 -1.9" width="1.6" height="0.8" depth="0.6" color="#b08a60"></a-box>
+    <a-box id="chair" class="obstacle" position="2.3 0.35 -1.1" width="0.5" height="0.7" depth="0.5" color="#3b3b3b"></a-box>
 
     <a-entity id="cameraRig" position="0 1.6 2.5">
       <a-entity camera wasd-controls="acceleration: 30" look-controls>
-        <a-entity id="cursor" cursor="rayOrigin: mouse" raycaster="objects: .ball" geometry="primitive: ring; radiusInner: 0.007; radiusOuter: 0.012" material="shader: flat; color: #fff" position="0 0 -0.5"></a-entity>
+        <a-entity id="cursor" cursor="rayOrigin: mouse"
+                  raycaster="objects: .ball"
+                  geometry="primitive: ring; radiusInner: 0.007; radiusOuter: 0.012"
+                  material="shader: flat; color: #fff"
+                  position="0 0 -0.5"></a-entity>
       </a-entity>
     </a-entity>
 
@@ -89,6 +85,8 @@
       const ballsRoot = document.getElementById('ballsRoot');
       const soundPlayer = document.getElementById('soundPlayer');
       const remainingEl = document.getElementById('remaining');
+      const backWall = document.getElementById('backWall');
+      const portalLight = document.getElementById('portalLight');
       const cursor = document.querySelector('#cursor');
       let remaining = TOTAL_BALLS;
       remainingEl.textContent = remaining;
@@ -108,7 +106,6 @@
         sp.setAttribute('material', 'color: #ffec3d; shader: standard; emissive: #ffec3d; emissiveIntensity: 1');
         sp.setAttribute('position', `${x} ${y} ${z}`);
         sp.setAttribute('animation__float', `property: position; dir: alternate; dur: 1500; loop: true; to: ${x} ${y+0.2} ${z}`);
-        sp.setAttribute('shadow', 'cast: true; receive: false');
         ballsRoot.appendChild(sp);
       }
       function collectBall(el) {
@@ -118,6 +115,10 @@
         el.parentNode.removeChild(el);
         remaining = Math.max(0, remaining - 1);
         remainingEl.textContent = remaining;
+        if (remaining === 0) {
+          backWall.setAttribute('visible', 'false');
+          portalLight.setAttribute('visible', 'true');
+        }
       }
       setTimeout(()=> {
         let spawned = 0;
