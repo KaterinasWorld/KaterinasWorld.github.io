@@ -37,7 +37,11 @@
     </a-assets>
 
     <a-entity light="type: ambient; intensity: 1.0; color: #ffffff"></a-entity>
-    <a-entity light="type: directional; intensity: 1.5; castShadow: true; shadowBias: 0.0001" position="3 5 3" rotation="-45 -45 0"></a-entity>
+    <a-entity light="type: directional; intensity: 1.5; castShadow: true; color: #ffffff" position="3 5 3" rotation="-45 -45 0"
+              shadow-camera-left="-10" shadow-camera-right="10"
+              shadow-camera-top="10" shadow-camera-bottom="-10"
+              shadow-camera-near="0.5" shadow-camera-far="20"
+              shadow-map-width="2048" shadow-map-height="2048"></a-entity>
 
     <a-plane rotation="-90 0 0" width="8" height="6" color="#dfe7dd" shadow="receive: true"></a-plane>
     <a-plane rotation="-90 0 0" width="4" height="3" material="src: #rugGreen; shader: standard; roughness:0.5; repeat: 2 2" position="0 0.01 0" shadow="receive: true"></a-plane>
@@ -136,6 +140,7 @@
   </script>
 </body>
 </html>
+
 
 
 
