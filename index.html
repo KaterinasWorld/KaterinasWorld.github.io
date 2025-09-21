@@ -39,10 +39,8 @@
 
     <a-box position="-4 1 0" depth="6" height="2.5" width="0.2" color="#d2c4b0"></a-box>
     <a-box position="4 1 0" depth="6" height="2.5" width="0.2" color="#d2c4b0"></a-box>
-    <a-plane id="backWall" position="0 1 3" width="8" height="2.5" color="#d2c4b0"></a-plane>
-    <a-plane id="portalLight" position="0 1 3.01" width="8" height="2.5"
-             material="color: #fff; emissive: #fff; emissiveIntensity: 2" visible="false"></a-plane>
-    <a-entity id="portalGlow" position="0 1 2.9" light="type: point; color: #ffffff; intensity: 2; distance: 10" visible="false"></a-entity>
+    <a-box position="0 1 -3" width="8" height="2.5" depth="0.2" color="#d2c4b0"></a-box>
+    <a-box position="0 1 3" width="8" height="2.5" depth="0.2" color="#d2c4b0"></a-box>
 
     <a-box id="bed" class="obstacle" position="-3.1 0.35 -1" width="2.2" height="0.6" depth="1.8" color="#c0d7c7"></a-box>
     <a-cylinder id="bin" class="obstacle" position="1.6 0.2 2.7" radius="0.18" height="0.4" color="#9e9e9e"></a-cylinder>
@@ -61,6 +59,11 @@
 
     <a-entity id="soundPlayer" sound="src: #tickSound; autoplay: false"></a-entity>
     <a-entity id="ballsRoot"></a-entity>
+
+    <a-ring id="portal" position="0 1 0" rotation="0 0 0" radius-inner="0.2" radius-outer="1.2"
+            material="color: #fff; emissive: #fff; emissiveIntensity: 1; opacity: 0"
+            visible="false"></a-ring>
+    <a-entity id="portalGlow" position="0 1 0" light="type: point; color: #ffffff; intensity: 2; distance: 10" visible="false"></a-entity>
   </a-scene>
 
   <script>
@@ -86,10 +89,9 @@
       const ballsRoot = document.getElementById('ballsRoot');
       const soundPlayer = document.getElementById('soundPlayer');
       const remainingEl = document.getElementById('remaining');
-      const backWall = document.getElementById('backWall');
-      const portalLight = document.getElementById('portalLight');
-      const portalGlow = document.getElementById('portalGlow');
       const cursor = document.querySelector('#cursor');
+      const portal = document.getElementById('portal');
+      const portalGlow = document.getElementById('portalGlow');
       let remaining = TOTAL_BALLS;
       remainingEl.textContent = remaining;
       function randomInRange(min, max) { return Math.random() * (max - min) + min; }
@@ -118,9 +120,9 @@
         remaining = Math.max(0, remaining - 1);
         remainingEl.textContent = remaining;
         if (remaining === 0) {
-          backWall.setAttribute('visible', 'false');
-          portalLight.setAttribute('visible', 'true');
+          portal.setAttribute('visible', 'true');
           portalGlow.setAttribute('visible', 'true');
+          portal.setAttribute('animation__fade', 'property: material.opacity; from: 0; to: 1; dur: 2000; easing: easeInOutQuad');
         }
       }
       setTimeout(()=> {
@@ -144,6 +146,7 @@
   </script>
 </body>
 </html>
+
 
 
 
